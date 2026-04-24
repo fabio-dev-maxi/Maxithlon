@@ -23,13 +23,14 @@ def loadXmlManifestazione():
 def downloadEventiFromManifestazione():
     root = ET.parse(FOLDER_NAME + COMPETITION_ID+'.xml').getroot()
     print("downloadEventiFromManifestazione")
-    for eventTag in root.findall('event'):
-        eventId = eventTag.attrib['id']
-        #print("Scarico l'evento con id " + eventId)
-        responseEvent = session.get(BASE_MAXITHLON_PATH+'event.php?eventid='+eventId)
-        #print("response per download evento " + eventId + ": " + str(responseEvent.status_code))
-        
-        storeXmlToFile(FOLDER_NAME + 'Event-'+eventId+'.xml', responseEvent.content)
+    for eventsTag in root.findall('events'):
+        for eventTag in eventsTag.findall('event'):
+            eventId = eventTag.attrib['id']
+            #print("Scarico l'evento con id " + eventId)
+            responseEvent = session.get(BASE_MAXITHLON_PATH+'event.php?eventid='+eventId)
+            print("response per download evento " + eventId + ": " + str(responseEvent.status_code))
+            
+            storeXmlToFile(FOLDER_NAME + 'Event-'+eventId+'.xml', responseEvent.content)
 
 #PEr ogni evento mi creo una mappa con tutte le posizioni a "punteggio" per poi calcolare il punteggio dopo
 def analizzoEvento(rootXml):
